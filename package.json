@@ -1,0 +1,13 @@
+{
+  "name": "warlog",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "cloudinary": "^1.11.0",
+    "form-data": "^2.3.2",
+    "moment": "^2.22.2",
+    "moment-timezone": "^0.5.17",
+    "node-fetch": "^2.1.2"
+  }
+}

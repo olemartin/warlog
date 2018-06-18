@@ -1,0 +1,7 @@
+{
+  "lambda": {
+    "role": "warlog-executor",
+    "name": "warlog",
+    "region": "eu-west-3"
+  }
+}
