@@ -34,10 +34,37 @@ exports.handler = async (event, context) => {
                 )
         )
         .map(async battle => {
+            let playerBattles = fetch('https://api.royaleapi.com/player/' + battle.team[0].tag + '/battles', {
+                headers: {
+                    auth: process.env.ROYALE_API_KEY,
+                },
+            });
             const deckUrl = await buildDeckUrl(battle.team[0].deck);
-            console.log('built deckUrl');
-            const shortDeckUrl = await shortenUrl(deckUrl);
-            const shortDeckLink = await shortenUrl(`${battle.team[0].deckLink}&war=1`);
+            let shortDeckUrl = shortenUrl(deckUrl);
+            let shortDeckLink = shortenUrl(`${battle.team[0].deckLink}&war=1`);
+
+            [playerBattles, shortDeckUrl, shortDeckLink] = await Promise.all([
+                playerBattles,
+                shortDeckUrl,
+                shortDeckLink,
+            ]);
+
+            const playerBattlesJson = await playerBattles.json();
+
+            const trainingMatches = playerBattlesJson
+                .filter(
+                    playerBattle =>
+                        playerBattle.type === 'clanMate' ||
+                        playerBattle.type === 'challenge' ||
+                        playerBattle.type === 'tournament'
+                )
+                .filter(
+                    playerBattle =>
+                        (playerBattle.team[0].deckLink === battle.team[0].deckLink &&
+                            playerBattle.team[0].tag === battle.team[0].tag) ||
+                        (playerBattle.opponent[0].deckLink === battle.team[0].deckLink &&
+                            playerBattle.opponent[0].tag === battle.team[0].tag)
+                ).length;
 
             const text =
                 `${battle.winner >= 1 ? 'Victory! :raised_hands:' : 'Loss :crying_cat_face:'}\n` +
@@ -47,6 +74,9 @@ exports.handler = async (event, context) => {
                     .locale('nb')
                     .tz('Europe/Oslo')
                     .format('lll')}.\n` +
+                `${
+                    battle.team[0].name
+                } trained ${trainingMatches} times with this deck (challenges, friendlies, tournaments) (last 25 battles).\n` +
                 `Deck: ${shortDeckUrl} Copy deck here: ${shortDeckLink}`;
             console.log('Returning text: ' + text);
             return text;
