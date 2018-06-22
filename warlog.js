@@ -1,10 +1,9 @@
 const cloudinary = require('cloudinary');
 const fetch = require('node-fetch');
 const moment = require('moment-timezone');
-
 const FormData = require('form-data');
-
 require('moment/locale/nb');
+
 cloudinary.config({
     cloud_name: 'fullfartfoto',
     api_key: process.env.CLOUDINARY_KEY,
@@ -12,7 +11,7 @@ cloudinary.config({
 });
 
 exports.handler = async (event, context) => {
-    const battles = await fetch('https://api.royaleapi.com/clan/' + process.env.CLAN_ID + '/battles?type=war', {
+    const battles = await fetch('https://api.royaleapi.com/clan/' + event.clan_id + '/battles?type=war', {
         headers: {
             auth: process.env.ROYALE_API_KEY,
         },
@@ -84,7 +83,7 @@ exports.handler = async (event, context) => {
         .map(async text => {
             text = await text;
             const responseText = JSON.stringify({ content: text });
-            return await fetch('https://discordapp.com/api/webhooks/' + process.env.DISCORD_KEY + '?wait=true', {
+            return await fetch('https://discordapp.com/api/webhooks/' + event.discord_key + '?wait=true', {
                 method: 'POST',
                 body: responseText,
                 headers: { 'Content-Type': 'application/json' },
