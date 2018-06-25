@@ -29,7 +29,7 @@ exports.handler = async (event, context) => {
                 .isAfter(
                     moment()
                         .utc()
-                        .subtract(15, 'minutes')
+                        .subtract(event.minutes || 15, 'minutes')
                 )
         )
         .map(async battle => {
@@ -93,19 +93,13 @@ exports.handler = async (event, context) => {
     results.forEach(promise => console.log(promise.status, promise.statusText));
     return results;
 };
-
 const shortenUrl = async deckUrl => {
-    const form = new FormData();
-    console.log(deckUrl);
-    form.append('url', deckUrl);
-    form.append('action', 'shorturl');
-    form.append('format', 'json');
-    const response = await fetch('http://tny.im/yourls-api.php', {
-        method: 'POST',
-        body: form,
+    const urlEncoded = encodeURIComponent(deckUrl);
+    console.log(`https://is.gd/create.php?format=simple&url=${urlEncoded}`);
+    const response = await fetch(`https://is.gd/create.php?format=simple&url=${urlEncoded}`, {
+        method: 'GET',
     });
-    const shortUrlResponse = await response.json();
-    return shortUrlResponse.shorturl;
+    return await response.text();
 };
 
 const buildDeckUrl = async deck => {
