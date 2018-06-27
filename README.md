@@ -1,9 +1,9 @@
-Denne poster alle krigskamper de siste femten minuttene til Discord via webhook. Integrerer med RoyaleAPI.com, Discord, Cloudinary og tny.im. Sett opp lambdaen til å kjøre hvert 15. minutt.
+This lambda posts data about your war games in you Clash Royale clan to a Discord Web Hook. Integrates with RoyaleApi.comi, Cloudinary, is.gd and Discord.
+Set the lambda to for instance run every 15 minutes.
 
+Check `example-event.json` for how your event object should look.
 
-Du trenger følgende environment-variabler for å kjøre denne lambdaen:
-* CLAN_ID
-* DISCORD_KEY 
+You need the following environment-variables set:
 * ROYALE_API_KEY
 * CLOUDINARY_KEY
 * CLOUDINARY_SECRET_KEY
