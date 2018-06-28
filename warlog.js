@@ -49,21 +49,23 @@ exports.handler = async (event, context) => {
             ]);
 
             const playerBattlesJson = await playerBattles.json();
+            if (!playerBattlesJson || !Array.isArray(playerBattlesJson)) {
+                console.log('Not array', playerBattlesJson);
+                return '';
+            }
+            const trainingMatches = playerBattlesJson.filter(
+                playerBattle =>
+                    (playerBattle.team[0].deckLink === battle.team[0].deckLink &&
+                        playerBattle.team[0].tag === battle.team[0].tag) ||
+                    (playerBattle.opponent[0].deckLink === battle.team[0].deckLink &&
+                        playerBattle.opponent[0].tag === battle.team[0].tag)
+            );
+            const groupedMatches = groupBy(trainingMatches, 'type');
 
-            const trainingMatches = playerBattlesJson
-                .filter(
-                    playerBattle =>
-                        playerBattle.type === 'clanMate' ||
-                        playerBattle.type === 'challenge' ||
-                        playerBattle.type === 'tournament'
-                )
-                .filter(
-                    playerBattle =>
-                        (playerBattle.team[0].deckLink === battle.team[0].deckLink &&
-                            playerBattle.team[0].tag === battle.team[0].tag) ||
-                        (playerBattle.opponent[0].deckLink === battle.team[0].deckLink &&
-                            playerBattle.opponent[0].tag === battle.team[0].tag)
-                ).length;
+            const totalTrainingCount =
+                (groupedMatches['clanMate'] ? groupedMatches['clanMate'].length : 0) +
+                (groupedMatches['challenge'] ? groupedMatches['challenge'].length : 0) +
+                (groupedMatches['tournament'] ? groupedMatches['tournament'].length : 0);
 
             const text =
                 `${battle.winner >= 1 ? 'Victory! :raised_hands:' : 'Loss :crying_cat_face:'}\n` +
@@ -73,10 +75,11 @@ exports.handler = async (event, context) => {
                     .locale('nb')
                     .tz('Europe/Oslo')
                     .format('lll')}.\n` +
-                `${
-                    battle.team[0].name
-                } trained ${trainingMatches} times with this deck (challenges, friendlies, tournaments) (last 25 battles).\n` +
-                `Deck: ${shortDeckUrl} Copy deck here: ${shortDeckLink}`;
+                `${battle.team[0].name} trained a total of ${totalTrainingCount} times. ` +
+                `(${groupedMatches['clanMate'] ? groupedMatches['clanMate'].length : 0} friendlies, ` +
+                `${groupedMatches['challenge'] ? groupedMatches['challenge'].length : 0} challenges and ` +
+                `${groupedMatches['tournament'] ? groupedMatches['tournament'].length : 0} tournaments).\n` +
+                `Deck: ${shortDeckUrl} Copy deck: ${shortDeckLink}`;
             console.log('Returning text: ' + text);
             return text;
         })
@@ -93,6 +96,14 @@ exports.handler = async (event, context) => {
     results.forEach(promise => console.log(promise.status, promise.statusText));
     return results;
 };
+
+const groupBy = (xs, key) => {
+    return xs.reduce(function(rv, x) {
+        (rv[x[key]] = rv[x[key]] || []).push(x);
+        return rv;
+    }, {});
+};
+
 const shortenUrl = async deckUrl => {
     const urlEncoded = encodeURIComponent(deckUrl);
     console.log(`https://is.gd/create.php?format=simple&url=${urlEncoded}`);
