@@ -21,7 +21,7 @@ Steps to install and configure this Discord Bot:
 		You will use these in step 14.
 
 **5.** Generate a discord webhook. Keep record of the string after "https://discordapp.com/api/webhooks/"
-![How to create a webhook in Discord](https://i.imgur.com/5kLNjui.gif)
+![How to create a webhook in Discord](https://i.imgur.com/0u4XAYv.gif)
 	
 		When you create a discord webhook it will give you something like this: https://discordapp.com/api/webhooks/464491015357595669/uT9-nZZi1R13kCM6a_oc-D3gF32raBoAP1A67r2KsgDvKMxXz2I4kqGHx31DLRsNd4d0
 		All you need to copy down for this tutorial is "464491015357595669/uT9-nZZi1R13kCM6a_oc-D3gF32raBoAP1A67r2KsgDvKMxXz2I4kqGHx31DLRsNd4d0"
@@ -79,5 +79,4 @@ claudia add-scheduled-event --event example-event.json --name warlog-timed-execu
 ```
 
 **17.** Open up the example-event.json and enter that into the test parameters.
-
-![How to create test parameter](https://i.imgur.com/dTczxf1.gif)
+![How to create test parameter in Lambda](https://i.imgur.com/fKkNSuo.gif)
