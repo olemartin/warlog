@@ -60,8 +60,8 @@ You only need to run 2 commands to start using the bot. You will need to be in t
 
 
 **15.** Command #1:
-
-```claudia create --region us-east-1 --handler warlog.handler --timeout 30 --set-env CLOUDINARY_KEY={ENTERKEYHERE},CLOUDINARY_SECRET_KEY={ENTERKEYHERE},ROYALE_API_KEY={ENTERAPIKEYHERE}
+```
+claudia create --region us-east-1 --handler warlog.handler --timeout 30 --set-env CLOUDINARY_KEY={ENTERKEYHERE},CLOUDINARY_SECRET_KEY={ENTERKEYHERE},ROYALE_API_KEY={ENTERAPIKEYHERE}
 ```
 
 	example:
@@ -74,8 +74,8 @@ You only need to run 2 commands to start using the bot. You will need to be in t
 
 
 **16.** Command #2:
-
-```claudia add-scheduled-event --event example-event.json --name warlog-timed-execution --schedule "rate(15 minutes)"
+```
+claudia add-scheduled-event --event example-event.json --name warlog-timed-execution --schedule "rate(15 minutes)"
 ```
 
 **17.** Open up the example-event.json and enter that into the test parameters.
