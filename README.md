@@ -16,28 +16,26 @@ Steps to install and configure this Discord Bot:
 **3.** Install Node Package Manager (NPM) and install on your machine: https://nodejs.org/en/
 
 **4.** Create a Cloudinary account: https://cloudinary.com/
-		``` 
+
 		Keep track of your Cloudinary Cloud Name, Cloudinary API Key, and Cloudinary API Secret.
 		You will use these in step 14.
-		```
 
 **5.** Generate a discord webhook. Keep record of the string after "https://discordapp.com/api/webhooks/"
 	
-		```
 		When you create a discord webhook it will give you something like this: https://discordapp.com/api/webhooks/464491015357595669/uT9-nZZi1R13kCM6a_oc-D3gF32raBoAP1A67r2KsgDvKMxXz2I4kqGHx31DLRsNd4d0
 		All you need to copy down for this tutorial is "464491015357595669/uT9-nZZi1R13kCM6a_oc-D3gF32raBoAP1A67r2KsgDvKMxXz2I4kqGHx31DLRsNd4d0"
 		You will use this string in step 12 and is the discord_key value.
 		![How to create a webhook in Discord](https://i.imgur.com/5kLNjui.gif)
-		```
 	
 **6.** In Cloudinary, you will need to click on "Media Library" then create a new folder called "CR".
 
 **7.** Download the card repository from the Royale API github: https://github.com/RoyaleAPI/cr-api-assets/archive/master.zip (you only need the "cards" folder)
 
 **8.** Upload the contents of the "cards" folder to your CR folder in Cloudinary.
+
 		![Images in the CR folder in Cloudinary](https://i.imgur.com/gvzPR4G.png)
 
-**9.**  On Line 8 of "warlog.js" enter in your own cloudinary key after it says "cloud_name:".
+**9.**  On Line 8 of "warlog.js" enter in your own cloudinary key after it says "cloud_name:"
 
 **10.** On line 76 of "warlog.js" correct the time zone to your time zone according to Moment Timezone documentation (http://momentjs.com/timezone)
 
@@ -55,16 +53,17 @@ Steps to install and configure this Discord Bot:
 
 	Go to the developer-key section and then enter "?crapikey get" in the chat. A bot should message you with your API key. Do not share this with anyone!
 
-`handler = warlog.handler
-A handler is The module-name.export value in your function. For example, "warlog.handler" would call exports.handler in warlog.js.
+The handler will be warlog.handler. A handler is The module-name.export value in your function. For example, "warlog.handler" would call exports.handler in warlog.js.
 
 You only need to run 2 commands to start using the bot. You will need to be in the warlog directory on your machine when executing these commands.
 ![Correct Directory](https://i.imgur.com/FZX1TH6.png)
 
-**15.** Command #1:
-`claudia create --region us-east-1 --handler warlog.handler --timeout 30 --set-env CLOUDINARY_KEY={ENTERKEYHERE},CLOUDINARY_SECRET_KEY={ENTERKEYHERE},ROYALE_API_KEY={ENTERAPIKEYHERE}
 
-	```
+**15.** Command #1:
+
+```claudia create --region us-east-1 --handler warlog.handler --timeout 30 --set-env CLOUDINARY_KEY={ENTERKEYHERE},CLOUDINARY_SECRET_KEY={ENTERKEYHERE},ROYALE_API_KEY={ENTERAPIKEYHERE}
+```
+
 	example:
 	claudia create --region us-east-1 --handler warlog.handler --timeout 30 --set-env CLOUDINARY_KEY=9541254654897,CLOUDINARY_SECRET_KEY=fd_3kanb-JghekD-843Njkdf,ROYALE_API_KEY=eyDClMJtZCKlmNOPqrStuv.WXyzadBNBdEs
 	
@@ -72,10 +71,12 @@ You only need to run 2 commands to start using the bot. You will need to be in t
 	
 	Example if you would like to execute this in paris region:
 	claudia create --region eu-west-3 --handler warlog.handler --timeout 30 --set-env CLOUDINARY_KEY=9541254654897,CLOUDINARY_SECRET_KEY=fd_3kanb-JghekD-843Njkdf,ROYALE_API_KEY=eyDClMJtZCKlmNOPqrStuv.WXyzadBNBdEs
-	```
+
 
 **16.** Command #2:
-`claudia add-scheduled-event --event example-event.json --name warlog-timed-execution --schedule "rate(15 minutes)"
+
+```claudia add-scheduled-event --event example-event.json --name warlog-timed-execution --schedule "rate(15 minutes)"
+```
 
 **17.** Open up the example-event.json and enter that into the test parameters.
 ![How to create test parameter](https://i.imgur.com/dTczxf1.gif)
