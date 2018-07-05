@@ -21,19 +21,19 @@ Steps to install and configure this Discord Bot:
 		You will use these in step 14.
 
 **5.** Generate a discord webhook. Keep record of the string after "https://discordapp.com/api/webhooks/"
+![How to create a webhook in Discord](https://i.imgur.com/5kLNjui.gif)
 	
 		When you create a discord webhook it will give you something like this: https://discordapp.com/api/webhooks/464491015357595669/uT9-nZZi1R13kCM6a_oc-D3gF32raBoAP1A67r2KsgDvKMxXz2I4kqGHx31DLRsNd4d0
 		All you need to copy down for this tutorial is "464491015357595669/uT9-nZZi1R13kCM6a_oc-D3gF32raBoAP1A67r2KsgDvKMxXz2I4kqGHx31DLRsNd4d0"
 		You will use this string in step 12 and is the discord_key value.
-		![How to create a webhook in Discord](https://i.imgur.com/5kLNjui.gif)
+		
 	
 **6.** In Cloudinary, you will need to click on "Media Library" then create a new folder called "CR".
 
 **7.** Download the card repository from the Royale API github: https://github.com/RoyaleAPI/cr-api-assets/archive/master.zip (you only need the "cards" folder)
 
 **8.** Upload the contents of the "cards" folder to your CR folder in Cloudinary.
-
-		![Images in the CR folder in Cloudinary](https://i.imgur.com/gvzPR4G.png)
+![Images in the CR folder in Cloudinary](https://i.imgur.com/gvzPR4G.png)
 
 **9.**  On Line 8 of "warlog.js" enter in your own cloudinary key after it says "cloud_name:"
 
@@ -79,4 +79,5 @@ claudia add-scheduled-event --event example-event.json --name warlog-timed-execu
 ```
 
 **17.** Open up the example-event.json and enter that into the test parameters.
+
 ![How to create test parameter](https://i.imgur.com/dTczxf1.gif)
