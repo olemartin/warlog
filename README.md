@@ -9,12 +9,9 @@ Steps to install and configure this Discord Bot:
 **1.** Clone this git repository.
 
 **2.** Set up AWS cli on your local machine. Use the following guides to accomplish that:
-
-	```
 	[Install the AWS Command Line Interface on Linux](https://docs.aws.amazon.com/cli/latest/userguide/awscli-install-linux.html)
 	[Install the AWS Command Line Interface on Microsoft Windows](https://docs.aws.amazon.com/cli/latest/userguide/awscli-install-windows.html)
 	[Install the AWS Command Line Interface on macOS](https://docs.aws.amazon.com/cli/latest/userguide/cli-install-macos.html)
-	```
 
 **3.** Install Node Package Manager (NPM) and install on your machine: https://nodejs.org/en/
 
@@ -41,23 +38,24 @@ Steps to install and configure this Discord Bot:
 		![Images in the CR folder in Cloudinary](https://i.imgur.com/gvzPR4G.png)
 
 **9.**  On Line 8 of "warlog.js" enter in your own cloudinary key after it says "cloud_name:".
+
 **10.** On line 76 of "warlog.js" correct the time zone to your time zone according to Moment Timezone documentation (http://momentjs.com/timezone)
-		```
+
 		The default time zone will be Norwegian Locale. If you are central time you need to change it. Example: .tz('America/Chicago')
-		```
+		
 **11.** On line 2 of "example-event.json" edit the clan_id field with your own clan ID
+
 **12.** On line 3 of "example-event.json" edit the existing discord_key to match the string created in the "Generate discord webhook" step.
 
 **13.** Install ClaudiaJS: https://claudiajs.com/tutorials/installing.html
 
-	```
 	You should only really need to run "npm install claudia -g" to have it working.
-	```
 	
 **14.** You need to have a RoyaleAPI key handy. If you do not have a RoyaleAPI key, please get one by joining the RoyaleAPI Discord: http://discord.me/RoyaleAPI
+
 	Go to the developer-key section and then enter "?crapikey get" in the chat. A bot should message you with your API key. Do not share this with anyone!
 
-handler = warlog.handler
+`handler = warlog.handler
 A handler is The module-name.export value in your function. For example, "warlog.handler" would call exports.handler in warlog.js.
 
 You only need to run 2 commands to start using the bot. You will need to be in the warlog directory on your machine when executing these commands.
