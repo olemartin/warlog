@@ -67,6 +67,8 @@ exports.handler = async (event, context) => {
                 (groupedMatches['challenge'] ? groupedMatches['challenge'].length : 0) +
                 (groupedMatches['tournament'] ? groupedMatches['tournament'].length : 0);
 
+            const allFriendlies = groupedMatches['clanMate'] ? groupedMatches['clanMate'].length : 0;
+
             const text =
                 `${battle.winner >= 1 ? 'Victory! :raised_hands:' : 'Loss :crying_cat_face:'}\n` +
                 `${battle.team[0].name} vs ${battle.opponent[0].name} at ` +
@@ -75,10 +77,11 @@ exports.handler = async (event, context) => {
                     .locale('nb')
                     .tz('Europe/Oslo')
                     .format('lll')}.\n` +
-                `${battle.team[0].name} trained a total of ${totalTrainingCount} times. ` +
+                `${battle.team[0].name} trained a total of ${totalTrainingCount} times with the war deck ` +
                 `(${groupedMatches['clanMate'] ? groupedMatches['clanMate'].length : 0} friendlies, ` +
                 `${groupedMatches['challenge'] ? groupedMatches['challenge'].length : 0} challenges and ` +
-                `${groupedMatches['tournament'] ? groupedMatches['tournament'].length : 0} tournaments).\n` +
+                `${groupedMatches['tournament'] ? groupedMatches['tournament'].length : 0} tournaments). ` +
+                `A total of ${allFriendlies} friendlies during the last 25 battles.\n` +
                 `Deck: ${shortDeckUrl} Copy deck: ${shortDeckLink}`;
             console.log('Returning text: ' + text);
             return text;
