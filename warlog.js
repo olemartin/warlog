@@ -53,12 +53,13 @@ exports.handler = async (event, context) => {
                 console.log('Not array', playerBattlesJson);
                 return '';
             }
+
             const trainingMatches = playerBattlesJson.filter(
                 playerBattle =>
-                    (playerBattle.team[0].deckLink === battle.team[0].deckLink &&
-                        playerBattle.team[0].tag === battle.team[0].tag) ||
-                    (playerBattle.opponent[0].deckLink === battle.team[0].deckLink &&
-                        playerBattle.opponent[0].tag === battle.team[0].tag)
+                    (equalDeck(battle.team[0].deck, playerBattle.team[0].deck) &&
+                        battle.team[0].tag === playerBattle.team[0].tag) ||
+                    (equalDeck(battle.team[0].deck, playerBattle.opponent[0].deck) &&
+                        battle.team[0].tag === playerBattle.opponent[0].tag)
             );
             const groupedMatches = groupBy(trainingMatches, 'type');
 
@@ -67,7 +68,7 @@ exports.handler = async (event, context) => {
                 (groupedMatches['challenge'] ? groupedMatches['challenge'].length : 0) +
                 (groupedMatches['tournament'] ? groupedMatches['tournament'].length : 0);
 
-            const allFriendlies = groupedMatches['clanMate'] ? groupedMatches['clanMate'].length : 0;
+            const allFriendlies = playerBattlesJson.filter(battle => battle.type === 'clanMate').length;
 
             const text =
                 `${battle.winner >= 1 ? 'Victory! :raised_hands:' : 'Loss :crying_cat_face:'}\n` +
@@ -98,6 +99,20 @@ exports.handler = async (event, context) => {
     const results = await Promise.all(jobs);
     results.forEach(promise => console.log(promise.status, promise.statusText));
     return results;
+};
+
+const equalDeck = (warDeck, otherDecks) => {
+    console.log('comparing');
+    const otherDeckString = otherDecks
+        .map(card => card.key)
+        .sort()
+        .join();
+    const warDeckString = warDeck
+        .map(card => card.key)
+        .sort()
+        .join();
+    console.log('comparing ', warDeckString, 'and', otherDeckString);
+    return otherDeckString === warDeckString;
 };
 
 const groupBy = (xs, key) => {
