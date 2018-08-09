@@ -5,7 +5,7 @@ const FormData = require('form-data');
 require('moment/locale/nb');
 
 cloudinary.config({
-    cloud_name: 'fullfartfoto',
+    cloud_name: process.env.CLOUD_NAME,
     api_key: process.env.CLOUDINARY_KEY,
     api_secret: process.env.CLOUDINARY_SECRET_KEY,
 });
@@ -41,11 +41,12 @@ exports.handler = async (event, context) => {
             const deckUrl = await buildDeckUrl(battle.team[0].deck);
             let shortDeckUrl = shortenUrl(deckUrl);
             let shortDeckLink = shortenUrl(`${battle.team[0].deckLink}&war=1`);
-
-            [playerBattles, shortDeckUrl, shortDeckLink] = await Promise.all([
+            let shortProfileLink = shortenUrl(`https://royaleapi.com/player/${battle.team[0].tag}`);
+            [playerBattles, shortDeckUrl, shortDeckLink, shortProfileLink] = await Promise.all([
                 playerBattles,
                 shortDeckUrl,
                 shortDeckLink,
+                shortProfileLink,
             ]);
 
             const playerBattlesJson = await playerBattles.json();
@@ -53,33 +54,39 @@ exports.handler = async (event, context) => {
                 console.log('Not array', playerBattlesJson);
                 return '';
             }
+
             const trainingMatches = playerBattlesJson.filter(
                 playerBattle =>
-                    (playerBattle.team[0].deckLink === battle.team[0].deckLink &&
-                        playerBattle.team[0].tag === battle.team[0].tag) ||
-                    (playerBattle.opponent[0].deckLink === battle.team[0].deckLink &&
-                        playerBattle.opponent[0].tag === battle.team[0].tag)
+                    (equalDeck(battle.team[0].deck, playerBattle.team[0].deck) &&
+                        battle.team[0].tag === playerBattle.team[0].tag) ||
+                    (equalDeck(battle.team[0].deck, playerBattle.opponent[0].deck) &&
+                        battle.team[0].tag === playerBattle.opponent[0].tag)
             );
             const groupedMatches = groupBy(trainingMatches, 'type');
 
             const totalTrainingCount =
                 (groupedMatches['clanMate'] ? groupedMatches['clanMate'].length : 0) +
                 (groupedMatches['challenge'] ? groupedMatches['challenge'].length : 0) +
+                (groupedMatches['PvP'] ? groupedMatches['PvP'].length : 0) +
                 (groupedMatches['tournament'] ? groupedMatches['tournament'].length : 0);
+
+            const allFriendlies = playerBattlesJson.filter(battle => battle.type === 'clanMate').length;
 
             const text =
                 `${battle.winner >= 1 ? 'Victory! :raised_hands:' : 'Loss :crying_cat_face:'}\n` +
                 `${battle.team[0].name} vs ${battle.opponent[0].name} at ` +
                 `${moment
                     .unix(battle.utcTime)
-                    .locale('nb')
-                    .tz('Europe/Oslo')
+                    .locale('en')
+                    .tz('America/Chicago')
                     .format('lll')}.\n` +
-                `${battle.team[0].name} trained a total of ${totalTrainingCount} times. ` +
+                `${battle.team[0].name} trained a total of ${totalTrainingCount} times with the war deck ` +
                 `(${groupedMatches['clanMate'] ? groupedMatches['clanMate'].length : 0} friendlies, ` +
-                `${groupedMatches['challenge'] ? groupedMatches['challenge'].length : 0} challenges and ` +
-                `${groupedMatches['tournament'] ? groupedMatches['tournament'].length : 0} tournaments).\n` +
-                `Deck: ${shortDeckUrl} Copy deck: ${shortDeckLink}`;
+                `${groupedMatches['challenge'] ? groupedMatches['challenge'].length : 0} in challenges and ` +
+                `${groupedMatches['PvP'] ? groupedMatches['PvP'].length : 0} on ladder and ` +
+                `${groupedMatches['tournament'] ? groupedMatches['tournament'].length : 0} in tournaments). ` +
+                `A total of ${allFriendlies} friendlies during the last 25 battles.\n` +
+                `Deck: ${shortDeckUrl}. Copy deck: ${shortDeckLink}. RoyaleApi profile: <${shortProfileLink}>.`;
             console.log('Returning text: ' + text);
             return text;
         })
@@ -95,6 +102,20 @@ exports.handler = async (event, context) => {
     const results = await Promise.all(jobs);
     results.forEach(promise => console.log(promise.status, promise.statusText));
     return results;
+};
+
+const equalDeck = (warDeck, otherDecks) => {
+    console.log('comparing');
+    const otherDeckString = otherDecks
+        .map(card => card.key)
+        .sort()
+        .join();
+    const warDeckString = warDeck
+        .map(card => card.key)
+        .sort()
+        .join();
+    console.log('comparing ', warDeckString, 'and', otherDeckString);
+    return otherDeckString === warDeckString;
 };
 
 const groupBy = (xs, key) => {
