@@ -38,7 +38,6 @@ Steps to install and configure this Discord Bot:
 ![Images in the CR folder in Cloudinary](https://i.imgur.com/gvzPR4G.png)
 
 
-
 **9.** On line 80 of "warlog.js" correct the time zone to your time zone according to Moment Timezone documentation (http://momentjs.com/timezone)
 
 
@@ -50,7 +49,6 @@ Steps to install and configure this Discord Bot:
 		
 		If you would like english, change this line to ".locale('en')"
 		
-
 		
 **11.** On line 2 of "example-event.json" edit the clan_id field with your own clan ID
 
@@ -80,11 +78,13 @@ You only need to run 2 commands to start using the bot. You will need to be in t
 
 **15.** Command #1:
 ```
+
 claudia create --region us-east-1 --handler warlog.handler --timeout 30 --set-env CLOUDINARY_KEY={ENTERKEYHERE},CLOUDINARY_SECRET_KEY={ENTERKEYHERE},ROYALE_API_KEY={ENTERAPIKEYHERE},CLOUD_NAME={ENTERCLOUIDNARYcloudNAMEHERE}
 ```
 
 	example:
 	claudia create --region us-east-1 --handler warlog.handler --timeout 30 --set-env CLOUDINARY_KEY=9541254654897,CLOUDINARY_SECRET_KEY=fd_3kanb-JghekD-843Njkdf,ROYALE_API_KEY=eyDClMJtZCKlmNOPqrStuv.WXyzadBNBdEs,CLOUD_NAME=fullartfoto
+
 	
 	You can find the AWS region closest to you by viewing this documentation: https://docs.aws.amazon.com/general/latest/gr/rande.html
 	
