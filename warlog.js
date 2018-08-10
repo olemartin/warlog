@@ -5,7 +5,7 @@ const FormData = require('form-data');
 require('moment/locale/nb');
 
 cloudinary.config({
-    cloud_name: 'fullfartfoto',
+    cloud_name: process.env.CLOUD_NAME,
     api_key: process.env.CLOUDINARY_KEY,
     api_secret: process.env.CLOUDINARY_SECRET_KEY,
 });
@@ -77,8 +77,8 @@ exports.handler = async (event, context) => {
                 `${battle.team[0].name} vs ${battle.opponent[0].name} at ` +
                 `${moment
                     .unix(battle.utcTime)
-                    .locale('nb')
-                    .tz('Europe/Oslo')
+                    .locale(process.env.MOMENT_LOCALE)
+                    .tz(process.env.TIME_ZONE)
                     .format('lll')}.\n` +
                 `${battle.team[0].name} trained a total of ${totalTrainingCount} times with the war deck ` +
                 `(${groupedMatches['clanMate'] ? groupedMatches['clanMate'].length : 0} friendlies, ` +
