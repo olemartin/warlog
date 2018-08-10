@@ -77,8 +77,8 @@ exports.handler = async (event, context) => {
                 `${battle.team[0].name} vs ${battle.opponent[0].name} at ` +
                 `${moment
                     .unix(battle.utcTime)
-                    .locale('en')
-                    .tz('America/Chicago')
+                    .locale(process.env.MOMENT_LOCALE)
+                    .tz(process.env.TIME_ZONE)
                     .format('lll')}.\n` +
                 `${battle.team[0].name} trained a total of ${totalTrainingCount} times with the war deck ` +
                 `(${groupedMatches['clanMate'] ? groupedMatches['clanMate'].length : 0} friendlies, ` +

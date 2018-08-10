@@ -1,7 +1,7 @@
 Warbot Clash Royale Discord Bot
 ================
 This lambda posts data about your war games in you Clash Royale clan to a Discord Web Hook. Integrates with RoyaleApi.comi, Cloudinary, is.gd and Discord.
-Set the lambda to for instance run every 15 minutes.
+Set the lambda to for instance run every 15 minutes. 
 
 Steps to install and configure this Discord Bot:
 -----------
@@ -37,32 +37,20 @@ Steps to install and configure this Discord Bot:
 **8.** Upload the contents of the "cards" folder to your CR folder in Cloudinary.
 ![Images in the CR folder in Cloudinary](https://i.imgur.com/gvzPR4G.png)
 
-
-**9.** On line 80 of "warlog.js" correct the time zone to your time zone according to Moment Timezone documentation (http://momentjs.com/timezone)
-
-
-		The default time zone will be Norwegian Locale. If you are central time you need to change it. Example: .tz('America/Chicago')
-
-
-**10.**  On Line 81 of "warlog.js" enter the correct locale for your language.
-
 		
-		If you would like english, change this line to ".locale('en')"
-		
-		
-**11.** On line 2 of "example-event.json" edit the clan_id field with your own clan ID
+**9.** On line 2 of "example-event.json" edit the clan_id field with your own clan ID
 
 
-**12.** On line 3 of "example-event.json" edit the existing discord_key to match the string created in the "Generate discord webhook" step.
+**10.** On line 3 of "example-event.json" edit the existing discord_key to match the string created in the "Generate discord webhook" step.
 
 
-**13.** Install ClaudiaJS: https://claudiajs.com/tutorials/installing.html
+**11.** Install ClaudiaJS: https://claudiajs.com/tutorials/installing.html
 
 
 	You should only really need to run "npm install claudia -g" to have it working.
 
 
-**14.** You need to have a RoyaleAPI key handy. If you do not have a RoyaleAPI key, please get one by joining the RoyaleAPI Discord: http://discord.me/RoyaleAPI
+**12.** You need to have a RoyaleAPI key handy. If you do not have a RoyaleAPI key, please get one by joining the RoyaleAPI Discord: http://discord.me/RoyaleAPI
 
 
 	Go to the developer-key section and then enter "?crapikey get" in the chat. A bot should message you with your API key. Do not share this with anyone!
@@ -76,26 +64,28 @@ You only need to run 2 commands to start using the bot. You will need to be in t
 ![Correct Directory](https://i.imgur.com/FZX1TH6.png)
 
 
-**15.** Command #1:
+**13.** Command #1:
 ```
-
 claudia create --region us-east-1 --handler warlog.handler --timeout 30 --set-env CLOUDINARY_KEY={ENTERKEYHERE},CLOUDINARY_SECRET_KEY={ENTERKEYHERE},ROYALE_API_KEY={ENTERAPIKEYHERE},CLOUD_NAME={ENTERCLOUIDNARYcloudNAMEHERE}
 ```
 
 	example:
-	claudia create --region us-east-1 --handler warlog.handler --timeout 30 --set-env CLOUDINARY_KEY=9541254654897,CLOUDINARY_SECRET_KEY=fd_3kanb-JghekD-843Njkdf,ROYALE_API_KEY=eyDClMJtZCKlmNOPqrStuv.WXyzadBNBdEs,CLOUD_NAME=fullartfoto
-
+	claudia create --region us-east-1 --handler warlog.handler --timeout 30 --set-env CLOUDINARY_KEY=9541254654897,CLOUDINARY_SECRET_KEY=fd_3kanb-JghekD-843Njkdf,ROYALE_API_KEY=eyDClMJtZCKlmNOPqrStuv.WXyzadBNBdEs,CLOUD_NAME=fullartfoto,MOMENT_LOCALE='nb',TIME_ZONE='Europe/Oslo'
 	
 	You can find the AWS region closest to you by viewing this documentation: https://docs.aws.amazon.com/general/latest/gr/rande.html
+	If you would like english, set MOMENT_LOCALE variable equal to 'en' --Moment Timezone documentation (http://momentjs.com/timezone)
+	If you would like Central Time, set TIME_ZONE variable equal to 'America/Chicago' --Moment Timezone documentation (http://momentjs.com/timezone)
 	
-	Example if you would like to execute this in paris region:
-	claudia create --region eu-west-3 --handler warlog.handler --timeout 30 --set-env CLOUDINARY_KEY=9541254654897,CLOUDINARY_SECRET_KEY=fd_3kanb-JghekD-843Njkdf,ROYALE_API_KEY=eyDClMJtZCKlmNOPqrStuv.WXyzadBNBdEs
+	Example if you would like to execute this in paris region with english language and central time zone:
+	claudia create --region eu-west-3 --handler warlog.handler --timeout 30 --set-env CLOUDINARY_KEY=9541254654897,CLOUDINARY_SECRET_KEY=fd_3kanb-JghekD-843Njkdf,ROYALE_API_KEY=eyDClMJtZCKlmNOPqrStuv.WXyzadBNBdEs,CLOUD_NAME=fullartfoto,MOMENT_LOCALE='en',TIME_ZONE='America/Chicago'
+	
 
 
-**16.** Command #2:
+
+**14.** Command #2:
 ```
 claudia add-scheduled-event --event example-event.json --name warlog-timed-execution --schedule "rate(15 minutes)"
 ```
 
-**17.** Open up the example-event.json and enter that into the test parameters.
+**16.** Open up the example-event.json and enter that into the test parameters.
 ![How to create test parameter in Lambda](https://i.imgur.com/fKkNSuo.gif)
