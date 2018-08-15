@@ -78,7 +78,7 @@ MOMENT_DATETIME_FORMAT={ENTEROPTIONALDATEFORMAT}
  * TIME_ZONE=Europe/Oslo
  * MOMENT_DATETIME_FORMAT=lll
 
-Check out (http://momentjs.com/timezone/) for information about moment and timezones.
+Check out http://momentjs.com/timezone/ for information about moment and timezones.
 
 
 	example:
