@@ -5,6 +5,7 @@
   "license": "MIT",
   "dependencies": {
     "cloudinary": "^1.11.0",
+    "envalid": "^4.1.4",
     "form-data": "^2.3.2",
     "moment": "^2.22.2",
     "moment-timezone": "^0.5.17",

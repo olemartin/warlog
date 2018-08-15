@@ -2,18 +2,14 @@ const cloudinary = require('cloudinary');
 const fetch = require('node-fetch');
 const moment = require('moment-timezone');
 const FormData = require('form-data');
-require('moment/locale/nb');
-
-cloudinary.config({
-    cloud_name: 'fullfartfoto',
-    api_key: process.env.CLOUDINARY_KEY,
-    api_secret: process.env.CLOUDINARY_SECRET_KEY,
-});
+const envalid = require('envalid');
+const { str } = envalid;
 
 exports.handler = async (event, context) => {
+    const env = init();
     const battles = await fetch('https://api.royaleapi.com/clan/' + event.clan_id + '/battles?type=war', {
         headers: {
-            auth: process.env.ROYALE_API_KEY,
+            auth: env.ROYALE_API_KEY,
         },
     });
 
@@ -22,20 +18,11 @@ exports.handler = async (event, context) => {
         .filter(battle => {
             return battle.type === 'clanWarWarDay';
         })
-        .filter(battle =>
-            moment
-                .unix(battle.utcTime)
-                .utc()
-                .isAfter(
-                    moment()
-                        .utc()
-                        .subtract(event.minutes || 15, 'minutes')
-                )
-        )
+        .filter(battle => moment.unix(battle.utcTime).isAfter(moment().subtract(event.minutes || 15, 'minutes')))
         .map(async battle => {
             let playerBattles = fetch('https://api.royaleapi.com/player/' + battle.team[0].tag + '/battles', {
                 headers: {
-                    auth: process.env.ROYALE_API_KEY,
+                    auth: env.ROYALE_API_KEY,
                 },
             });
             const deckUrl = await buildDeckUrl(battle.team[0].deck);
@@ -71,15 +58,14 @@ exports.handler = async (event, context) => {
                 (groupedMatches['tournament'] ? groupedMatches['tournament'].length : 0);
 
             const allFriendlies = playerBattlesJson.filter(battle => battle.type === 'clanMate').length;
-
             const text =
                 `${battle.winner >= 1 ? 'Victory! :raised_hands:' : 'Loss :crying_cat_face:'}\n` +
                 `${battle.team[0].name} vs ${battle.opponent[0].name} at ` +
                 `${moment
                     .unix(battle.utcTime)
-                    .locale('nb')
-                    .tz('Europe/Oslo')
-                    .format('lll')}.\n` +
+                    .locale(env.MOMENT_LOCALE)
+                    .tz(env.TIME_ZONE)
+                    .format(env.MOMENT_DATETIME_FORMAT)}.\n` +
                 `${battle.team[0].name} trained a total of ${totalTrainingCount} times with the war deck ` +
                 `(${groupedMatches['clanMate'] ? groupedMatches['clanMate'].length : 0} friendlies, ` +
                 `${groupedMatches['challenge'] ? groupedMatches['challenge'].length : 0} in challenges and ` +
@@ -104,8 +90,28 @@ exports.handler = async (event, context) => {
     return results;
 };
 
+const init = () => {
+    const env = envalid.cleanEnv(process.env, {
+        CLOUDINARY_NAME: str(),
+        CLOUDINARY_KEY: str(),
+        CLOUDINARY_SECRET_KEY: str(),
+        ROYALE_API_KEY: str(),
+        MOMENT_LOCALE: str({ default: 'nb' }),
+        TIME_ZONE: str({ default: 'Europe/Oslo' }),
+        MOMENT_DATETIME_FORMAT: str({ default: 'lll' }),
+    });
+
+    require('moment/locale/' + env.MOMENT_LOCALE);
+    cloudinary.config({
+        cloud_name: env.CLOUDINARY_NAME,
+        api_key: env.CLOUDINARY_KEY,
+        api_secret: env.CLOUDINARY_SECRET_KEY,
+    });
+
+    return env;
+};
+
 const equalDeck = (warDeck, otherDecks) => {
-    console.log('comparing');
     const otherDeckString = otherDecks
         .map(card => card.key)
         .sort()
@@ -114,7 +120,6 @@ const equalDeck = (warDeck, otherDecks) => {
         .map(card => card.key)
         .sort()
         .join();
-    console.log('comparing ', warDeckString, 'and', otherDeckString);
     return otherDeckString === warDeckString;
 };
 
