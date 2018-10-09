@@ -140,14 +140,14 @@ const shortenUrl = async deckUrl => {
 };
 
 const buildDeckUrl = async deck => {
-    const card1 = { key: deck[0].key, level: deck[0].level };
-    const card2 = { key: deck[1].key, level: deck[1].level };
-    const card3 = { key: deck[2].key, level: deck[2].level };
-    const card4 = { key: deck[3].key, level: deck[3].level };
-    const card5 = { key: deck[4].key, level: deck[4].level };
-    const card6 = { key: deck[5].key, level: deck[5].level };
-    const card7 = { key: deck[6].key, level: deck[6].level };
-    const card8 = { key: deck[7].key, level: deck[7].level };
+    const card1 = { key: deck[0].key, level: calculateLevel(deck[0]) };
+    const card2 = { key: deck[1].key, level: calculateLevel(deck[1]) };
+    const card3 = { key: deck[2].key, level: calculateLevel(deck[2]) };
+    const card4 = { key: deck[3].key, level: calculateLevel(deck[3]) };
+    const card5 = { key: deck[4].key, level: calculateLevel(deck[4]) };
+    const card6 = { key: deck[5].key, level: calculateLevel(deck[5]) };
+    const card7 = { key: deck[6].key, level: calculateLevel(deck[6]) };
+    const card8 = { key: deck[7].key, level: calculateLevel(deck[7]) };
 
     return cloudinary.url(`CR/${card1.key}`, {
         secure: true,
@@ -170,4 +170,17 @@ const buildDeckUrl = async deck => {
             { overlay: `text:Arial_20_bold:Level%20${card8.level},co_white`, gravity: 'south', x: 150 },
         ],
     });
+};
+
+const calculateLevel = card => {
+    if (card.rarity === 'Rare') {
+        return card.level + 2;
+    }
+    if (card.rarity === 'Epic') {
+        return card.level + 5;
+    }
+    if (card.rarity === 'Legendary') {
+        return card.level + 8;
+    }
+    return card.level;
 };
