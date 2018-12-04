@@ -83,7 +83,7 @@ exports.handler = async (event, context) => {
                 `${groupedMatches['PvP'] ? groupedMatches['PvP'].length : 0} on ladder and ` +
                 `${groupedMatches['tournament'] ? groupedMatches['tournament'].length : 0} in tournaments). ` +
                 `A total of ${allFriendlies} friendlies during the last 25 battles.\n` +
-                `` +
+                `${countTable}\n` +
                 `Deck: ${shortDeckUrl}. Copy deck: ${shortDeckLink}. RoyaleApi profile: <${shortProfileLink}>.`;
             console.log('Returning text: ' + text);
             return text;
