@@ -77,14 +77,10 @@ exports.handler = async (event, context) => {
                     .locale(env.MOMENT_LOCALE)
                     .tz(env.TIME_ZONE)
                     .format(env.MOMENT_DATETIME_FORMAT)}.\n` +
-                `${battle.team[0].name} trained a total of ${totalTrainingCount} times with the war deck ` +
-                `(${groupedMatches['clanMate'] ? groupedMatches['clanMate'].length : 0} friendlies, ` +
-                `${groupedMatches['challenge'] ? groupedMatches['challenge'].length : 0} in challenges and ` +
-                `${groupedMatches['PvP'] ? groupedMatches['PvP'].length : 0} on ladder and ` +
-                `${groupedMatches['tournament'] ? groupedMatches['tournament'].length : 0} in tournaments). ` +
+                `${battle.team[0].name} (<${shortProfileLink}>) trained a total of ${totalTrainingCount} times with the war deck ` +
+                `(${shortDeckUrl} ${shortDeckLink}). ` +
                 `A total of ${allFriendlies} friendlies during the last 25 battles.\n` +
-                `${countTable}\n` +
-                `Deck: ${shortDeckUrl}. Copy deck: ${shortDeckLink}. RoyaleApi profile: <${shortProfileLink}>.`;
+                `${countTable}`;
             console.log('Returning text: ' + text);
             return text;
         })
