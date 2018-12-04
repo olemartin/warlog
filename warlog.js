@@ -3,6 +3,7 @@ const fetch = require('node-fetch');
 const moment = require('moment-timezone');
 const FormData = require('form-data');
 const envalid = require('envalid');
+const table = require('text-table');
 const { str } = envalid;
 
 exports.handler = async (event, context) => {
@@ -20,15 +21,17 @@ exports.handler = async (event, context) => {
         })
         .filter(battle => moment.unix(battle.utcTime).isAfter(moment().subtract(event.minutes || 15, 'minutes')))
         .map(async battle => {
-            let playerBattles = fetch('https://api.royaleapi.com/player/' + battle.team[0].tag + '/battles', {
+            const warBattleTag = battle.team[0].tag
+            let playerBattles = fetch('https://api.royaleapi.com/player/' + warBattleTag + '/battles', {
                 headers: {
                     auth: env.ROYALE_API_KEY,
                 },
             });
-            const deckUrl = await buildDeckUrl(battle.team[0].deck);
+            const warBattleDeck = battle.team[0].deck
+            const deckUrl = await buildDeckUrl(warBattleDeck);
             let shortDeckUrl = shortenUrl(deckUrl);
             let shortDeckLink = shortenUrl(`${battle.team[0].deckLink}&war=1`);
-            let shortProfileLink = shortenUrl(`https://royaleapi.com/player/${battle.team[0].tag}`);
+            let shortProfileLink = shortenUrl(`https://royaleapi.com/player/${warBattleTag}`);
             [playerBattles, shortDeckUrl, shortDeckLink, shortProfileLink] = await Promise.all([
                 playerBattles,
                 shortDeckUrl,
@@ -42,12 +45,20 @@ exports.handler = async (event, context) => {
                 return '';
             }
 
+            const countTable = createCountTable(
+              deckMatchCounts(
+                warBattleDeck,
+                warBattleTag,
+                playerBattlesJson
+              )
+            );
+
             const trainingMatches = playerBattlesJson.filter(
                 playerBattle =>
-                    (equalDeck(battle.team[0].deck, playerBattle.team[0].deck) &&
-                        battle.team[0].tag === playerBattle.team[0].tag) ||
-                    (equalDeck(battle.team[0].deck, playerBattle.opponent[0].deck) &&
-                        battle.team[0].tag === playerBattle.opponent[0].tag)
+                    (equalDeck(warBattleDeck, playerBattle.team[0].deck) &&
+                        warBattleTag === playerBattle.team[0].tag) ||
+                    (equalDeck(warBattleDeck, playerBattle.opponent[0].deck) &&
+                        warBattleTag === playerBattle.opponent[0].tag)
             );
             const groupedMatches = groupBy(trainingMatches, 'type');
 
@@ -72,6 +83,7 @@ exports.handler = async (event, context) => {
                 `${groupedMatches['PvP'] ? groupedMatches['PvP'].length : 0} on ladder and ` +
                 `${groupedMatches['tournament'] ? groupedMatches['tournament'].length : 0} in tournaments). ` +
                 `A total of ${allFriendlies} friendlies during the last 25 battles.\n` +
+                `` +
                 `Deck: ${shortDeckUrl}. Copy deck: ${shortDeckLink}. RoyaleApi profile: <${shortProfileLink}>.`;
             console.log('Returning text: ' + text);
             return text;
@@ -110,6 +122,66 @@ const init = () => {
 
     return env;
 };
+
+const numEqual = (warDeck, otherDeck) => {
+    const warSet = new Set(warDeck.map(card => card.key));
+    const otherSet = new Set(otherDeck.map(card => card.key));
+    const intersection = new Set([...warSet].filter(key => otherSet.has(key)));
+    return intersection.size;
+};
+
+const deckMatchCounts = (warDeck, warBattleTag, playerBattles) =>
+  playerBattles.map(playerBattle => {
+    const playerBattleDeck =
+      playerBattle.team
+        .concat(playerBattle.opponent)
+        .find(p => p.tag === warBattleTag)
+        .deck;
+    return {
+      type: playerBattle.type,
+      equalCards: numEqual(warDeck, playerBattleDeck)
+    };
+  });
+
+const countArr = countGroup => countGroup.reduce(
+  (arr, {equalCards}) => {
+    const countIdx = 8 - equalCards;
+    if(countIdx < 5) {
+      arr[countIdx] = arr[countIdx] + 1;
+    }
+    return arr;
+  },
+  [0, 0, 0, 0, 0]
+);
+
+const createCountTable = matchCounts => {
+  const grouped = groupBy(matchCounts, 'type');
+
+  const tableRows = [
+    ["", "WD", "-1", "-2", "-3", "-4"],
+    []
+  ];
+
+  const totalCounts = ["Total", 0, 0, 0, 0, 0];
+
+  Object.entries(grouped).forEach(
+    ([type, counts]) => {
+      const typeCounts = countArr(counts);
+      tableRows.push([type, ...typeCounts]);
+      for (let i = 0; i < 5; i++) {
+        totalCounts[i + 1] += typeCounts[i];
+      }
+    }
+  );
+
+  tableRows.push([]);
+  tableRows.push(totalCounts);
+
+  return "```\n" + table(
+    tableRows,
+    {align: ['l', 'r', 'r', 'r', 'r', 'r']}
+  ) + "\n```";
+}
 
 const equalDeck = (warDeck, otherDecks) => {
     const otherDeckString = otherDecks
@@ -184,3 +256,6 @@ const calculateLevel = card => {
     }
     return card.level;
 };
+
+//exports.deckMatchCounts = deckMatchCounts
+//exports.createCountTable = createCountTable
