@@ -71,7 +71,7 @@ exports.handler = async (event, context) => {
             const allFriendlies = playerBattlesJson.filter(battle => battle.type === 'clanMate').length;
             const text =
                 `${battle.winner >= 1 ? 'Victory! :raised_hands:' : 'Loss :crying_cat_face:'}\n` +
-                `${battle.team[0].name} vs ${battle.opponent[0].name} at ` +
+                `${battle.team[0].name} (${battle.team[0].startTrophies}) vs ${battle.opponent[0].name} (${battle.opponent[0].startTrophies}) at ` +
                 `${moment
                     .unix(battle.utcTime)
                     .locale(env.MOMENT_LOCALE)
@@ -220,21 +220,21 @@ const buildDeckUrl = async deck => {
     return cloudinary.url(`CR/${card1.key}`, {
         secure: true,
         transformation: [
-            { width: 100, height: 120, crop: 'scale', x: 0, y: 0 },
+            { width: 100, height: 100, crop: 'scale', x: 0, y: 0 },
             { overlay: `text:Arial_20_bold:Level%20${card1.level},co_white`, gravity: 'south' },
-            { height: 120, overlay: `CR:${card2.key}`, width: 100, x: 100, crop: 'scale' },
+            { height: 100, overlay: `CR:${card2.key}`, width: 100, x: 100, crop: 'scale' },
             { overlay: `text:Arial_20_bold:Level%20${card2.level},co_white`, gravity: 'south', x: 50 },
-            { height: 120, overlay: `CR:${card3.key}`, width: 100, x: 150, crop: 'scale' },
+            { height: 100, overlay: `CR:${card3.key}`, width: 100, x: 150, crop: 'scale' },
             { overlay: `text:Arial_20_bold:Level%20${card3.level},co_white`, gravity: 'south', x: 100 },
-            { height: 120, overlay: `CR:${card4.key}`, width: 100, x: 200, crop: 'scale' },
+            { height: 100, overlay: `CR:${card4.key}`, width: 100, x: 200, crop: 'scale' },
             { overlay: `text:Arial_20_bold:Level%20${card4.level},co_white`, gravity: 'south', x: 150 },
-            { height: 120, overlay: `CR:${card5.key}`, width: 100, x: -150, y: 120, crop: 'scale' },
+            { height: 100, overlay: `CR:${card5.key}`, width: 100, x: -150, y: 100, crop: 'scale' },
             { overlay: `text:Arial_20_bold:Level%20${card5.level},co_white`, gravity: 'south', x: -150 },
-            { height: 120, overlay: `CR:${card6.key}`, width: 100, x: -50, y: 60, crop: 'scale' },
+            { height: 100, overlay: `CR:${card6.key}`, width: 100, x: -50, y: 50, crop: 'scale' },
             { overlay: `text:Arial_20_bold:Level%20${card6.level},co_white`, gravity: 'south', x: -50 },
-            { height: 120, overlay: `CR:${card7.key}`, width: 100, x: 50, y: 60, crop: 'scale' },
+            { height: 100, overlay: `CR:${card7.key}`, width: 100, x: 50, y: 50, crop: 'scale' },
             { overlay: `text:Arial_20_bold:Level%20${card7.level},co_white`, gravity: 'south', x: 50 },
-            { height: 120, overlay: `CR:${card8.key}`, width: 100, x: 150, y: 60, crop: 'scale' },
+            { height: 100, overlay: `CR:${card8.key}`, width: 100, x: 150, y: 50, crop: 'scale' },
             { overlay: `text:Arial_20_bold:Level%20${card8.level},co_white`, gravity: 'south', x: 150 },
         ],
     });
