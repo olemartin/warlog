@@ -208,14 +208,14 @@ const shortenUrl = async deckUrl => {
 };
 
 const buildDeckUrl = async deck => {
-    const card1 = { key: deck[0].key, level: deck[0].level };
-    const card2 = { key: deck[1].key, level: deck[1].level };
-    const card3 = { key: deck[2].key, level: deck[2].level };
-    const card4 = { key: deck[3].key, level: deck[3].level };
-    const card5 = { key: deck[4].key, level: deck[4].level };
-    const card6 = { key: deck[5].key, level: deck[5].level };
-    const card7 = { key: deck[6].key, level: deck[6].level };
-    const card8 = { key: deck[7].key, level: deck[7].level };
+    const card1 = { key: deck[0].key, level: deck[0].displayLevel };
+    const card2 = { key: deck[1].key, level: deck[1].displayLevel };
+    const card3 = { key: deck[2].key, level: deck[2].displayLevel };
+    const card4 = { key: deck[3].key, level: deck[3].displayLevel };
+    const card5 = { key: deck[4].key, level: deck[4].displayLevel };
+    const card6 = { key: deck[5].key, level: deck[5].displayLevel };
+    const card7 = { key: deck[6].key, level: deck[6].displayLevel };
+    const card8 = { key: deck[7].key, level: deck[7].displayLevel };
 
     return cloudinary.url(`CR/${card1.key}`, {
         secure: true,
