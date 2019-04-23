@@ -15,6 +15,7 @@ exports.handler = async (event, context) => {
     });
 
     const json = await battles.json();
+    console.log('json fetched', json);
     const jobs = json
         .filter(battle => {
             return battle.type === 'clanWarWarDay';
