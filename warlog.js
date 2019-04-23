@@ -14,6 +14,7 @@ exports.handler = async (event, context) => {
         },
     });
 
+    console.log('raw response', battles);
     const json = await battles.json();
     console.log('json fetched', json);
     const jobs = json
