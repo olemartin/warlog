@@ -8,7 +8,7 @@ const { str } = envalid;
 
 exports.handler = async (event, context) => {
     const env = init();
-    const battles = await fetch('https://api-v2.royaleapi.com/clan/' + event.clan_id + '/battles?type=war', {
+    const battles = await fetch('https://api.royaleapi.com/clan/' + event.clan_id + '/battles?type=war', {
         headers: {
             auth: env.ROYALE_API_KEY,
         },
