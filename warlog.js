@@ -8,7 +8,7 @@ const { str } = envalid;
 
 exports.handler = async (event, context) => {
     const env = init();
-    const battles = await fetch('https://api.royaleapi.com/clan/' + event.clan_id + '/battles?type=war', {
+    const battles = await fetch('https://api-v2.royaleapi.com/clan/' + event.clan_id + '/battles?type=war', {
         headers: {
             auth: env.ROYALE_API_KEY,
         },
@@ -22,7 +22,7 @@ exports.handler = async (event, context) => {
         .filter(battle => moment.unix(battle.utcTime).isAfter(moment().subtract(event.minutes || 15, 'minutes')))
         .map(async battle => {
             const warBattleTag = battle.team[0].tag
-            let playerBattles = fetch('https://api.royaleapi.com/player/' + warBattleTag + '/battles', {
+            let playerBattles = fetch('https://api-v2.royaleapi.com/player/' + warBattleTag + '/battles', {
                 headers: {
                     auth: env.ROYALE_API_KEY,
                 },
@@ -240,5 +240,5 @@ const buildDeckUrl = async deck => {
     });
 };
 
-//exports.deckMatchCounts = deckMatchCounts
-//exports.createCountTable = createCountTable
+exports.deckMatchCounts = deckMatchCounts
+exports.createCountTable = createCountTable
