@@ -21,7 +21,7 @@ exports.handler = async (event, context) => {
         .filter(battle => {
             return battle.type === 'clanWarWarDay';
         })
-        .filter(battle => moment.unix(battle.utcTime).isAfter(moment().subtract(event.minutes || 15, 'minutes')))
+        .filter(battle => moment.utc(battle.utcTime).isAfter(moment().subtract(event.minutes || 15, 'minutes')))
         .map(async battle => {
             const warBattleTag = battle.team[0].tag
             console.log("Checking tag: " + warBattleTag);
