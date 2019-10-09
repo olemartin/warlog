@@ -76,7 +76,7 @@ exports.handler = async (event, context) => {
                 `${battle.winner >= 1 ? 'Victory! :raised_hands:' : 'Loss :crying_cat_face:'}\n` +
                 `${battle.team[0].name} (${battle.team[0].startTrophies}) vs ${battle.opponent[0].name} (${battle.opponent[0].startTrophies}) at ` +
                 `${moment
-                    .unix(battle.utcTime)
+                    .utc(battle.utcTime)
                     .locale(env.MOMENT_LOCALE)
                     .tz(env.TIME_ZONE)
                     .format(env.MOMENT_DATETIME_FORMAT)}.\n` +
