@@ -7,6 +7,7 @@ const table = require('text-table');
 const { str } = envalid;
 
 exports.handler = async (event, context) => {
+    console.log("Starting job");
     const env = init();
     const battles = await fetch('https://api.royaleapi.com/clan/' + event.clan_id + '/battles?type=war', {
         headers: {
@@ -15,6 +16,7 @@ exports.handler = async (event, context) => {
     });
 
     const json = await battles.json();
+    console.log("Read clan war battles: " + json.length);
     const jobs = json
         .filter(battle => {
             return battle.type === 'clanWarWarDay';
@@ -22,6 +24,7 @@ exports.handler = async (event, context) => {
         .filter(battle => moment.unix(battle.utcTime).isAfter(moment().subtract(event.minutes || 15, 'minutes')))
         .map(async battle => {
             const warBattleTag = battle.team[0].tag
+            console.log("Checking tag: " + warBattleTag);
             let playerBattles = fetch('https://api-v2.royaleapi.com/player/' + warBattleTag + '/battles', {
                 headers: {
                     auth: env.ROYALE_API_KEY,
